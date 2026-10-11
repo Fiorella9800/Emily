@@ -6,9 +6,10 @@ Emily è una rubrica personale React + Vite. Questa cartella contiene il progett
 
 - Progetto Supabase già collegato: `mbzxgciojwefynbbxjot`, regione `eu-west-1`.
 - Schema e permessi già applicati. **Non rieseguire la migrazione sul progetto esistente.**
-- Accesso con codice e-mail e SMTP Brevo configurati; Fiorella ha confermato un accesso riuscito l’11 ottobre 2026.
+- Accesso con e-mail e password. La registrazione richiede un codice di conferma dell’e-mail; gli accessi successivi usano la password.
+- SMTP Brevo già configurato. Recupero password tramite link e-mail e attivazione della password per gli account che usavano soltanto i codici.
 - Accesso telefonico implementato ma disabilitato, finché non viene configurato e provato un servizio SMS.
-- Versione attualmente online: https://filo-rubrica-fiorella.hanaku.chatgpt.site/emily/ . Il passaggio a GitHub Pages non è ancora stato pubblicato.
+- Indirizzo dell’app: https://fiorella9800.github.io/Emily/ . Gli aggiornamenti sul ramo main vengono pubblicati da GitHub Actions.
 - La rubrica originale all’indirizzo principale usa ancora il vecchio backend Sites. Quei dati non sono stati migrati automaticamente a Supabase.
 
 Il repository contiene soltanto codice, schema e configurazione pubblica. Non contiene contatti degli utenti, foto, credenziali SMTP, password o chiavi amministrative.
@@ -24,7 +25,7 @@ GitHub conserva il codice e le sue versioni. GitHub Pages pubblica il sito stati
 5. Attendi che build e deploy risultino completati. L’indirizzo reale è mostrato in **Settings → Pages → Visit site**. Se il repository è esattamente `Fiorella9800/Emily`, l’indirizzo previsto è `https://fiorella9800.github.io/Emily/`: non considerarlo attivo prima della conferma del deployment.
 6. Aggiorna Supabase come indicato sotto e prova l’accesso sul nuovo indirizzo.
 
-Il workflow installa le versioni bloccate dal lockfile, esegue sei test locali sui permessi e costruisce il sito per il percorso restituito da GitHub Pages. Pubblica soltanto `dist/`, senza migrazioni o dati. Non richiede chiavi amministrative o password di Supabase nei secrets GitHub. Se usi un ramo diverso da main, modifica il filtro `on.push.branches` del workflow.
+Il workflow installa le versioni bloccate dal lockfile, esegue i test di autenticazione e dei permessi e costruisce il sito per il percorso restituito da GitHub Pages. Pubblica soltanto `dist/`, senza migrazioni o dati. Non richiede chiavi amministrative o password di Supabase nei secrets GitHub. Se usi un ramo diverso da main, modifica il filtro `on.push.branches` del workflow.
 
 Il workflow si trova qui in una cartella autonoma esportabile. Per usarlo deve essere `.github/workflows/pages.yml` alla radice del **nuovo repository**, non `independent/.github/workflows/pages.yml` in un repository più grande.
 
@@ -67,9 +68,22 @@ npm run build -- --base /Emily/
 
 La configurazione attuale è in `public-config.json`: URL Supabase e chiave **publishable**, sicuri per il frontend. Per un progetto diverso copia `.env.example` in `.env.local` e cambia le variabili. `.env.local` deve rimanere fuori dal repository. Le variabili `VITE_` vengono incluse nel browser: non usarle mai per password SMTP, chiavi `service_role`, `sb_secret_` o backup.
 
-## E-mail e telefono
+## Password, registrazione e recupero
 
-Il progetto esistente usa già SMTP Brevo e codici e-mail. Non occorre reinserire le credenziali per cambiare hosting.
+Il progetto esistente usa già SMTP Brevo e la conferma e-mail è attiva. Non occorre reinserire le credenziali né creare un nuovo database.
+
+- **Nuovi utenti:** Crea account → e-mail e password (almeno 8 caratteri) → codice di conferma e-mail → rubrica. Dal successivo accesso basta la password.
+- **Account esistente già aperto:** Gestisci accesso → Imposta password. La modifica conserva l’identificativo dell’utente, profilo, contatti e foto.
+- **Account esistente senza password, non collegato:** Ho già un account senza password → stessa e-mail → ultimo codice → scegli la password. Il codice non crea un secondo account.
+- **Password dimenticata:** richiedi un link via e-mail → aprilo → scegli la nuova password. La risposta alla richiesta non rivela se un indirizzo è registrato.
+
+Le password vengono inviate direttamente a Supabase Auth e gestite dal suo sistema di autenticazione. Non vengono salvate nei profili, nei contatti o nei log dell’app. La sessione viene mantenuta dal client Supabase fino all’uscita o alla scadenza. I link di recupero vengono convalidati dal servizio prima di mostrare il modulo; un vecchio accesso salvato non rende valido un link scaduto. Gli eventuali link di condivisione `?share=` restano disponibili dopo l’accesso.
+
+In Supabase mantieni **Email** attivo e **Confirm email** abilitato. Site URL e Redirect URLs devono includere l’indirizzo esatto `https://fiorella9800.github.io/Emily/`. Il recupero usa il template **Reset Password** con `{{ .ConfirmationURL }}`, già presente nel template standard. Il file incluso serve se vuoi personalizzarlo. Modificare il file nel repository non modifica automaticamente il template del progetto Supabase.
+
+Puoi applicare anche requisiti di password sul server nelle impostazioni Auth. Il controllo delle password già compromesse è un’opzione disponibile sui piani che lo supportano: https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection .
+
+## E-mail e telefono
 
 Per un **nuovo progetto Supabase**, abilita Email e la verifica dei recapiti, configura **Custom SMTP prima di modificare i template** e usa questi file:
 
@@ -77,9 +91,10 @@ Per un **nuovo progetto Supabase**, abilita Email e la verifica dei recapiti, co
 | --- | --- |
 | Confirm sign up | `supabase/templates/confirm-signup.html` |
 | Magic link or OTP | `supabase/templates/magic-link.html` |
+| Reset Password | `supabase/templates/reset-password.html` |
 | Change Email Address | `supabase/templates/change-email.html` |
 
-I primi due template devono includere `{{ .Token }}`: il primo serve al primo accesso/registrazione, il secondo agli accessi successivi. Questa app chiede di digitare un codice e non consuma magic link o callback OAuth. Il provider e-mail ha limiti di invio propri. Configura Site URL e Redirect URLs con l’indirizzo reale, senza lasciare localhost.
+Il template Confirm sign up deve includere `{{ .Token }}` per la verifica della registrazione. Magic link or OTP conserva il codice per consentire agli account precedenti di attivare la password. Reset Password deve includere `{{ .ConfirmationURL }}`: l’app gestisce il callback di recupero. Il provider e-mail ha limiti di invio propri. Configura Site URL e Redirect URLs con l’indirizzo reale, senza lasciare localhost.
 
 Per il telefono configura un fornitore SMS supportato da Supabase, abilita Phone, verifica un SMS reale e poi imposta `VITE_PHONE_AUTH_ENABLED=true` nella build oppure `phoneAuthEnabled: true` nella configurazione pubblica. I messaggi possono avere costi.
 
@@ -107,4 +122,5 @@ Questa pubblicazione rimane un’app web. PWA installabile e pacchetti per gli s
 - Deploy Vite: https://vite.dev/guide/static-deploy.html
 - Redirect Supabase: https://supabase.com/docs/guides/auth/redirect-urls
 - Codici e-mail: https://supabase.com/docs/guides/auth/auth-email-passwordless
+- Accesso con password: https://supabase.com/docs/guides/auth/passwords
 - SMTP: https://supabase.com/docs/guides/auth/auth-smtp
