@@ -1,6 +1,6 @@
 .menu-toggle{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border:1px solid var(--line);border-radius:5px;color:var(--text);background:var(--surface);margin-left:auto;font-size:13px}
 .menu-toggle:hover{background:var(--surface-muted)}
-.navigation-drawer{left:0!important;top:0!important;translate:none!important;transform:none;display:flex;flex-direction:column;gap:0;width:min(350px,calc(100vw - 28px))!important;max-width:none!important;height:100dvh;max-height:100dvh;border-radius:0 12px 12px 0;padding:calc(24px + env(safe-area-inset-top)) 20px calc(20px + env(safe-area-inset-bottom));background:var(--surface);color:var(--text);border-color:var(--line);animation:drawer-arrive .18s ease-out!important}
+.navigation-drawer{left:auto!important;right:0!important;top:0!important;translate:none!important;transform:none;display:flex;flex-direction:column;gap:0;width:min(350px,calc(100vw - 28px))!important;max-width:none!important;height:100dvh;max-height:100dvh;border-radius:12px 0 0 12px;padding:calc(24px + env(safe-area-inset-top)) 20px calc(20px + env(safe-area-inset-bottom));background:var(--surface);color:var(--text);border-color:var(--line);animation:drawer-arrive .18s ease-out!important}
 .navigation-drawer [data-slot=dialog-close]{top:calc(12px + env(safe-area-inset-top));right:12px;width:44px;height:44px;display:grid;place-items:center}
 .drawer-heading{padding:0 38px 20px 4px;color:var(--muted-text)}
 .drawer-heading [data-slot=dialog-title]{font-family:Georgia,serif;font-size:20px;font-weight:400;line-height:1.4}
@@ -18,5 +18,5 @@
 @media(max-width:760px){.topbar{height:76px;gap:12px}.menu-toggle{padding:0 12px}.settings-heading{gap:12px;margin-bottom:24px}.settings-heading h1{font-size:36px}.settings-heading>svg{margin-top:23px}.settings-card{padding:20px}.theme-options{gap:8px}}
 @media(max-height:600px){.drawer-heading{padding-bottom:10px}.drawer-profile{padding:12px;margin-bottom:10px}.drawer-links{gap:2px}.drawer-links button{min-height:44px;padding:10px 12px}.drawer-divider{margin:5px 0}.drawer-bottom{margin-top:8px;padding-top:10px}}
 
-@keyframes drawer-arrive{from{transform:translateX(-100%)}to{transform:translateX(0)}}
+@keyframes drawer-arrive{from{transform:translateX(100%)}to{transform:translateX(0)}}
 @media(prefers-reduced-motion:reduce){.navigation-drawer{animation:none!important}}
