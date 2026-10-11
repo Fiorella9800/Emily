@@ -1,0 +1,12 @@
+{
+ "name":"Emily",
+ "short_name":"Emily",
+ "description":"Emily, il tuo network personale.",
+ "lang":"it",
+ "start_url":"./",
+ "scope":"./",
+ "display":"standalone",
+ "background_color":"#fffdf9",
+ "theme_color":"#a6152b",
+ "icons":[{"src":"./branding/emily-connected.png","sizes":"1254x1254","type":"image/png","purpose":"any"}]
+}

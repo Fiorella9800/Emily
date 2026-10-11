@@ -4,6 +4,7 @@ import {ArrowRight,Eye,EyeOff,LockKeyhole} from 'lucide-react';
 import {supabase,phoneEnabled} from './supabase';
 import {createAuthActions,normalizeIdentifier,readableAuthError,rememberRecovery} from './auth';
 import {appPath} from './routes';
+import EmilyBrand from './components/emily-brand';
 
 const redirectTo=window.location.origin+appPath;
 const actions=supabase?createAuthActions(supabase.auth,redirectTo):null;
@@ -11,7 +12,7 @@ type Mode='login'|'signup'|'activate'|'recover'|'phone';
 type PendingCode={email:string;kind:'signup'|'activate'|'phone'};
 
 export function AuthLayout({children}:{children:ReactNode}){
- return <div className="auth-layout"><section className="auth-story"><a href={appPath} className="brand">Emily<span>.</span></a><p className="eyebrow">YOUR PERSONAL NETWORK</p><h1>Le persone giuste.<br/><em>Nel tuo mondo.</em></h1><p>Un volto, una conversazione, una nuova possibilità. Dai un posto alle persone che incontri.</p><div className="auth-private"><LockKeyhole size={17}/> Una rubrica personale, con le tue connessioni.</div></section><main className="auth-panel"><div className="auth-card"><p className="eyebrow">IL TUO SPAZIO EMILY</p>{children}</div></main></div>;
+ return <div className="auth-layout"><section className="auth-story"><EmilyBrand/><p className="eyebrow">YOUR PERSONAL NETWORK</p><h1>Le persone giuste.<br/><em>Nel tuo mondo.</em></h1><p>Un volto, una conversazione, una nuova possibilità. Dai un posto alle persone che incontri.</p><div className="auth-private"><LockKeyhole size={17}/> Una rubrica personale, con le tue connessioni.</div></section><main className="auth-panel"><div className="auth-card"><p className="eyebrow">IL TUO SPAZIO EMILY</p>{children}</div></main></div>;
 }
 
 function PasswordField({label,value,onChange,disabled,autoComplete='new-password',required=true}:{label:string;value:string;onChange:(value:string)=>void;disabled:boolean;autoComplete?:'new-password'|'current-password';required?:boolean}){

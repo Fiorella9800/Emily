@@ -9,6 +9,7 @@ Emily è una rubrica personale React + Vite. Questa cartella contiene il progett
 - Accesso con e-mail e password. La registrazione richiede un codice di conferma dell’e-mail; gli accessi successivi usano la password.
 - SMTP Brevo già configurato. Recupero password tramite link e-mail e attivazione della password per gli account che usavano soltanto i codici.
 - Accesso telefonico implementato ma disabilitato, finché non viene configurato e provato un servizio SMS.
+- Logo “E connessa” nell’intestazione e nelle schermate di accesso, con icona browser e icona del collegamento sulla schermata Home.
 - Indirizzo dell’app: https://fiorella9800.github.io/Emily/ . Gli aggiornamenti sul ramo main vengono pubblicati da GitHub Actions.
 - La rubrica originale all’indirizzo principale usa ancora il vecchio backend Sites. Quei dati non sono stati migrati automaticamente a Supabase.
 
