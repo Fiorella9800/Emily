@@ -7,15 +7,15 @@ export const fields = z.object({
   phone: text(100), email: text(254).refine(v => !v || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)),
   city: text(200), country: text(200), place: text(500), date: text(10), notes: text(10000),
   usefulness: text(5000), addressMode: z.enum(['','Tu','Lei']).default(''), sectors: text(1000),
-  linkedin: link, instagram: link, other: link, photo: text(100).refine(v => /^[a-zA-Z0-9-]*$/.test(v)),
+  linkedin: link, instagram: link, other: link, otherLabel: text(120), photo: text(100).refine(v => /^[a-zA-Z0-9-]*$/.test(v)),
   relations: z.array(z.object({id:z.string().uuid(),label:z.string().trim().min(1).max(120)})).max(100).default([]),
 });
 export type Person = z.infer<typeof fields> & { id?: string; version?: number; updated?: string };
-export type BasicPerson = Pick<Person,'first'|'last'|'role'|'company'|'phone'|'email'|'city'|'country'|'linkedin'|'instagram'|'other'|'photo'>;
-export function blank(): Person { return {first:'',last:'',role:'',company:'',phone:'',email:'',city:'',country:'',place:'',date:'',notes:'',usefulness:'',addressMode:'',sectors:'',linkedin:'',instagram:'',other:'',photo:'',relations:[]}; }
+export type BasicPerson = Pick<Person,'first'|'last'|'role'|'company'|'phone'|'email'|'city'|'country'|'linkedin'|'instagram'|'other'|'otherLabel'|'photo'>;
+export function blank(): Person { return {first:'',last:'',role:'',company:'',phone:'',email:'',city:'',country:'',place:'',date:'',notes:'',usefulness:'',addressMode:'',sectors:'',linkedin:'',instagram:'',other:'',otherLabel:'',photo:'',relations:[]}; }
 // This is the complete allowlist for sharing, deliberately independent of private fields.
 export function basic(p: Person): BasicPerson {
-  return {first:p.first,last:p.last,role:p.role,company:p.company,phone:p.phone,email:p.email,city:p.city,country:p.country,linkedin:p.linkedin,instagram:p.instagram,other:p.other,photo:p.photo};
+  return {first:p.first,last:p.last,role:p.role,company:p.company,phone:p.phone,email:p.email,city:p.city,country:p.country,linkedin:p.linkedin,instagram:p.instagram,other:p.other,otherLabel:p.otherLabel,photo:p.photo};
 }
 export const normalized = (s: string) => s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
 export const name = (p: Pick<Person,'first'|'last'>) => [p.first,p.last].filter(Boolean).join(' ');
@@ -50,6 +50,7 @@ export function parseCard(input: string): { person?: Person; token?: string; inf
       if(key==='FN')fn=v;if(key==='ORG')p.company=splitCard(value).filter(Boolean).join(' · ');
       if(key==='TITLE')p.role=v;if(key==='TEL'&&!p.phone)p.phone=v.replace(/^tel:/i,'');
       if(key==='EMAIL'&&!p.email)p.email=v.replace(/^mailto:/i,'');
+      if(key==='X-EMILY-OTHER-LABEL')p.otherLabel=v;
       if(key==='ADR'){const a=splitCard(value);p.city=a[3]||'';p.country=a[6]||'';}
       if(key==='PHOTO'){
         if(/^data:image\/(jpeg|png|webp);base64,[a-z0-9+/=]+$/i.test(value))photoData=value;
@@ -81,6 +82,7 @@ export function vcard(p:BasicPerson,photoBase64=''){
   if(p.phone)out.push('TEL;TYPE=CELL:'+e(p.phone));if(p.email)out.push('EMAIL:'+e(p.email));
   if(p.city||p.country)out.push(`ADR:;;;${e(p.city)};;;${e(p.country)}`);
   for(const key of ['linkedin','instagram','other'] as const)if(p[key])out.push('URL:'+p[key]);
+  if(p.other&&p.otherLabel)out.push('X-EMILY-OTHER-LABEL:'+e(p.otherLabel));
   if(photoBase64)out.push('PHOTO;ENCODING=b;TYPE=JPEG:'+photoBase64);out.push('END:VCARD');
   return out.join('\r\n');
 }

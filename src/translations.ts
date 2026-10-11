@@ -407,5 +407,12 @@ export const english:Record<string,string>={
   "Apri elenco dei paesi": "Open country list",
   "Paesi": "Countries",
   "Nessun paese trovato": "No country found",
-  "Paesi trovati: {count}": "Countries found: {count}"
+  "Paesi trovati: {count}": "Countries found: {count}",
+  "Modifica": "Edit",
+  "Nome del collegamento": "Link name",
+  "Es. Facebook, sito personale": "E.g. Facebook, personal website",
+  "Contatti e profili": "Contact details and profiles",
+  "Non hai ancora aggiunto recapiti o profili social.": "You have not added any contact details or social profiles yet.",
+  "Informazioni della persona. Premi Modifica per aggiornarle.": "Contact information. Press Edit to update it.",
+  "Note e contesto personale restano privati.": "Notes and personal context stay private."
 };

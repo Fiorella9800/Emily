@@ -1,6 +1,6 @@
 import {test,before,after} from 'node:test';
 import assert from 'node:assert/strict';
-import {readFile} from 'node:fs/promises';
+import {readFile,readdir} from 'node:fs/promises';
 import {PGlite} from '@electric-sql/pglite';
 
 let db;const alice='11111111-1111-4111-8111-111111111111',bob='22222222-2222-4222-8222-222222222222';
@@ -20,10 +20,27 @@ before(async()=>{
  grant usage on schema auth,storage,public to anon,authenticated;
  grant select,insert,delete on storage.objects to authenticated;
  `);
- await db.exec(await readFile(new URL('../supabase/migrations/202610110001_emily.sql',import.meta.url),'utf8'));
+ const migrations=new URL('../supabase/migrations/',import.meta.url);
+ for(const file of (await readdir(migrations)).filter(file=>file.endsWith('.sql')).sort())await db.exec(await readFile(new URL(file,migrations),'utf8'));
  await db.query('insert into auth.users values($1),($2)',[alice,bob]);
 });
 after(async()=>db?.close());
+
+test('named links are validated, saved and shared without including private context',async()=>{
+ await user(alice);
+ const saved=await rpc('emily_save_contact',[{first:'Named link',other:'https://example.com/facebook',otherLabel:'  Facebook  ',notes:'Private note'},null,0]);
+ const row=(await db.query('select data from emily_contacts where id=$1',[saved.id])).rows[0].data;
+ assert.equal(row.otherLabel,'Facebook');
+ const pending=await rpc('emily_begin_share',[saved.id,false]);await rpc('emily_publish_share',[pending.token]);
+ await user(bob);
+ const preview=await rpc('emily_get_share',[pending.token]);assert.equal(preview.person.otherLabel,'Facebook');assert.equal(preview.person.other,'https://example.com/facebook');assert.equal(preview.person.notes,undefined);
+ const imported=await rpc('emily_import_share',[pending.token,'']);assert.equal((await db.query('select data from emily_contacts where id=$1',[imported.id])).rows[0].data.otherLabel,'Facebook');await rpc('emily_delete_contact',[imported.id,1]);
+ await user(alice);
+ await assert.rejects(()=>rpc('emily_save_contact',[{first:'Too long',otherLabel:'x'.repeat(121)},null,0]),/troppo lungo/);
+ await assert.rejects(()=>rpc('emily_save_contact',[{first:'Wrong type',otherLabel:{label:'Facebook'}},null,0]),/Campo non valido/);
+ const legacy=await rpc('emily_save_contact',[{first:'Old card',other:'https://example.com'},null,0]);assert.equal((await db.query('select data from emily_contacts where id=$1',[legacy.id])).rows[0].data.otherLabel,'');
+ await rpc('emily_revoke_share',[pending.token]);await rpc('emily_delete_contact',[saved.id,1]);await rpc('emily_delete_contact',[legacy.id,1]);
+});
 
 test('anonymous visitors cannot read or mutate contacts or inspect shared data',async()=>{
  await user(null,'anon');
