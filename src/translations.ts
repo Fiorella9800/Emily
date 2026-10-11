@@ -396,5 +396,16 @@ export const english:Record<string,string>={
   "Salva prima il profilo o la scheda.": "Save the profile or contact card first.",
   "Condivisione non disponibile.": "Share unavailable.",
   "Attendi il caricamento della foto.": "Wait for the photo to upload.",
-  "La condivisione è scaduta o è stata revocata.": "This share has expired or been revoked."
+  "La condivisione è scaduta o è stata revocata.": "This share has expired or been revoked.",
+  "Prefisso telefonico": "Country calling code",
+  "Numero internazionale": "International number",
+  "Numero di telefono": "Phone number",
+  "Es. 333 1234567": "E.g. 333 1234567",
+  "Cerca o scegli un paese": "Search or choose a country",
+  "Cancella paese": "Clear country",
+  "Chiudi elenco dei paesi": "Close country list",
+  "Apri elenco dei paesi": "Open country list",
+  "Paesi": "Countries",
+  "Nessun paese trovato": "No country found",
+  "Paesi trovati: {count}": "Countries found: {count}"
 };
