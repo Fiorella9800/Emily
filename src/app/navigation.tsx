@@ -9,12 +9,12 @@ export default function Navigation({profile,photoUrl,accountLabel,view,count,onN
  const openingHelp=useRef(false);
  const {t}=usePreferences();
  function navigate(next:string){setOpen(false);onNavigate(next);}
- const sections=[{id:'people',label:'Le tue persone',Icon:BookUser},{id:'map',label:'Connessioni',Icon:Network},{id:'profile',label:'Profilo',Icon:UserRound},{id:'shares',label:'Condivisioni',Icon:Share2}];
+ const sections=[{id:'people',label:'Le tue persone',Icon:BookUser},{id:'map',label:'Connessioni',Icon:Network},{id:'shares',label:'Condivisioni',Icon:Share2}];
  return <Dialog open={open} onOpenChange={setOpen}>
   <DialogTrigger asChild><button ref={menuRef} type="button" className="menu-toggle" aria-label={t('Apri menu')} aria-expanded={open}><Menu size={22} aria-hidden="true"/><span>{t('Menu')}</span></button></DialogTrigger>
   <DialogContent className="navigation-drawer" aria-describedby="navigation-description" onCloseAutoFocus={event=>{if(openingHelp.current){event.preventDefault();openingHelp.current=false;}}}>
    <div className="drawer-heading"><DialogTitle>{t('Il tuo menu Emily')}</DialogTitle><DialogDescription id="navigation-description" className="sr-only">{t('Scegli una sezione del tuo spazio personale.')}</DialogDescription></div>
-   <button type="button" className="drawer-profile" onClick={()=>navigate('profile')} aria-label={t('Il tuo profilo')}>
+   <button type="button" className="drawer-profile" onClick={()=>navigate('profile')} aria-label={t('Il tuo profilo')} aria-current={view==='profile'?'page':undefined}>
     <span className="drawer-avatar">{profile.photo&&photoUrl(profile)?<img src={photoUrl(profile)} alt=""/>:<UserRound size={25} aria-hidden="true"/>}</span>
     <span><span className="drawer-profile-label">{t('Profilo')}</span><strong>{name(profile)||t('Il tuo profilo')}</strong><small>{accountLabel}</small></span><ChevronRight size={17} aria-hidden="true"/>
    </button>
