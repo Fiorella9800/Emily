@@ -51,6 +51,14 @@ La build e i test locali non sostituiscono queste verifiche nel browser dopo la 
 
 ## Sviluppo locale
 
+### Foto di profili e contatti
+
+Il caricamento di una foto apre un pop-up con l’immagine intera e un riquadro quadrato. Trascina il riquadro per centrare il volto e usa gli angoli per ridimensionarlo; sono supportati touch e tastiera. **Imposta foto profilo** conferma il ritaglio e torna alla scheda. **Modifica ritaglio** riapre l’immagine originale, prima del salvataggio. Annullare il pop-up mantiene la foto precedente.
+
+La foto viene salvata insieme al profilo o alla persona quando premi **Salva profilo** o **Salva persona**. Il ritaglio viene preparato nel browser come JPEG 600 × 600; viene caricata soltanto la foto confermata, tramite il servizio foto già esistente.
+
+### Comandi
+
 Usa Node.js 24 (oppure una versione compatibile, almeno 22.13):
 
 ```bash

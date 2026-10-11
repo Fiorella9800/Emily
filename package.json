@@ -24,7 +24,8 @@
     "qrcode": "1.5.4",
     "jsqr": "1.4.0",
     "sonner": "2.0.8",
-    "zod": "3.25.76"
+    "zod": "3.25.76",
+    "react-image-crop": "11.1.2"
   },
   "devDependencies": {
     "@electric-sql/pglite": "0.5.8",
