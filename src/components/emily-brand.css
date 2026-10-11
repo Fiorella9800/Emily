@@ -1,5 +1,5 @@
 .brand{display:inline-flex;align-items:center;gap:3px;flex-shrink:0}
-.brand .brand-wordmark{color:#242124}
-.brand .brand-dot{color:#a6152b}
-.brand-icon{position:relative;display:block;width:1em;height:1em;overflow:hidden;border-radius:.24em;background:#a6152b;flex-shrink:0}
+.brand .brand-wordmark{color:var(--text)}
+.brand .brand-dot{color:var(--brand-text)}
+.brand-icon{position:relative;display:block;width:1em;height:1em;overflow:hidden;border-radius:.24em;background:var(--brand-fill);flex-shrink:0}
 .brand-icon img{position:absolute;left:50%;top:50%;width:122%;height:122%;max-width:none;transform:translate(-50%,-50%)}
