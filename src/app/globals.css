@@ -12,3 +12,6 @@
 @media(max-width:420px){.topbar .private{display:none}.topbar .help{font-size:11px}.two{grid-template-columns:1fr}.share-preview{grid-template-columns:1fr}.qr-image{width:220px;margin:auto}.share-preview>div{display:flex;gap:15px;align-items:flex-start}.share-preview .shared-portrait{width:60px;height:60px;flex-shrink:0}.heading-actions{flex-direction:column}.received-card{align-items:flex-start}}
 
 @media(max-width:600px){.topbar .private{display:none}}
+
+.tabs button{min-height:48px;flex-shrink:0}
+@media(max-width:420px){.tabs{gap:10px}.tabs button>span{display:none}}
